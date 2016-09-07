@@ -1,0 +1,14 @@
+**/.idea/
+**/*.iml
+**/*.ipr
+**/*.iws
+**/.tmp/
+**/.DS_Store
+
+node_modules/
+bower_components/
+coverage/
+.sass-cache/
+dist/
+e2e/.eslintrc
+gulp/.eslintrc
