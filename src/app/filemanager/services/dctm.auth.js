@@ -20,7 +20,7 @@
             $rootScope.globals = {
                 currentUser: {
                     username: username,
-                    authdata: authdata
+                    authdata: password
                 }
             };
             $cookieStore.put('globals', $rootScope.globals);
