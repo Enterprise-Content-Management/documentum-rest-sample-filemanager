@@ -33,7 +33,7 @@ Different with [Angular File Manager](https://github.com/joni2back/angular-filem
 rest.cors.enabled=true
 ```
 
-> CORS support is built into Documentum REST Services since 7.3. For previous versions, you need to seek an outside solution, for instance, [node-http-proxy](https://github.com/nodejitsu/node-http-proxy).
+> CORS support is built into Documentum REST Services since 7.3. For previous versions, you need to seek an outside solution, for instance, [node-http-proxy](https://github.com/nodejitsu/node-http-proxy). Please read [Working-around-CORS](https://github.com/Enterprise-Content-Management/documentum-rest-client-angular-filemanager/wiki/Working-around-CORS) for the deployment on REST 7.2 and earlier versions.
 
 #### Build and Run
 * If you don't have [NodeJS](https://nodejs.org/) installed yet, download and install it.
