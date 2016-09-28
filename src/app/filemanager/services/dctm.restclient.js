@@ -78,7 +78,7 @@
             dctmRestClient.prototype.ftSearch = function(repository, terms, path, pageNumber, itemsPerPage) {
                 return 'mmtm-r5-search-rest-api-call';
             };
-            // TODO for MMTM R5: implement search rest api call START 
+            // TODO for MMTM R5: implement search rest api call END 
 
             dctmRestClient.prototype.upload = function(parent, fileObj) {
                 var requestUrl = this.findUrlGivenLinkRelation(parent, 'http://identifiers.emc.com/linkrel/documents');
