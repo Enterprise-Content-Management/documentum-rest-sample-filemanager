@@ -74,14 +74,11 @@
                 return post(this, requestUrl, buildPersistentObject(['object_name', name]), 'error_creating_folder');
             };
 
+            // TODO for MMTM R5: implement search rest api call START 
             dctmRestClient.prototype.ftSearch = function(repository, terms, path, pageNumber, itemsPerPage) {
-                var requestUrl = this.findUrlGivenLinkRelation(repository, 'http://identifiers.emc.com/linkrel/search');
-                requestUrl = buildUriWithQuery(requestUrl, ['q', terms, 'page', pageNumber, 'items-per-page', itemsPerPage, 'inline', true]);
-                if (path != null && path.length > 1) {
-                    requestUrl = buildUriWithQuery(requestUrl, ['locations', path]);
-                }
-                return get(this, requestUrl, 'error_executing_search');
+                return 'mmtm-r5-search-rest-api-call';
             };
+            // TODO for MMTM R5: implement search rest api call START 
 
             dctmRestClient.prototype.upload = function(parent, fileObj) {
                 var requestUrl = this.findUrlGivenLinkRelation(parent, 'http://identifiers.emc.com/linkrel/documents');

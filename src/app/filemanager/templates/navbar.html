@@ -12,10 +12,12 @@
     <div id="navbar" class="navbar-collapse collapse">
       <div class="navbar-form navbar-right">
 
+        <!-- TODO for MMTM R5: replace the search function 'mmtm-r5-to-search' START -->
         <i class="glyphicon glyphicon-search"></i>
         <input type="text" class="form-control input-sm" placeholder="{{'search' | translate}}..." ng-model="$parent.search"
-               ng-keypress="($event.which === 13)?ftSearch():0">
+               ng-keypress="($event.which === 13)?mmtm-r5-to-search():0">
         <span/>
+        <!-- TODO for MMTM R5: replace the search function 'mmtm-r5-to-search' END -->
         <button class="btn btn-default btn-sm" ng-click="modal('newfolder') && prepareNewFolder()">
             <i class="glyphicon glyphicon-plus"></i> {{"new_folder" | translate}}
         </button>
