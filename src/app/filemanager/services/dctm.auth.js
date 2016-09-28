@@ -7,10 +7,11 @@
     function (Base64, $http, $cookieStore, $rootScope, fileManagerConfig) {
         var service = {};
 
+        // TODO for MMTM R1: set authentication for http START 
         service.try_login = function (username, password) {
-            var authdata = Base64.encode(username + ':' + password);
-            $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;            
+            // set authentication for http            
         };
+        // TODO for MMTM R1: set authentication for http END 
 
         service.post_login = function (username, password, repository) {
             console.log("Logged into repository: ");
