@@ -69,10 +69,12 @@
                 return get(this, requestUrl, 'error_getting_folder_children');
             }
 
+            // TODO for MMTM R3: fix create folder rest api call START 
             dctmRestClient.prototype.createFolder = function(folder, name) {
                 var requestUrl = this.findUrlGivenLinkRelation(folder, 'http://identifiers.emc.com/linkrel/folders');
-                return post(this, requestUrl, buildPersistentObject(['object_name', name]), 'error_creating_folder');
+                return post(this, requestUrl, '{\"object_name\":\"' + name + '\"}', 'error_creating_folder');
             };
+            // TODO for MMTM R3: fix create folder rest api call START 
 
             // TODO for MMTM R5: implement search rest api call START 
             dctmRestClient.prototype.ftSearch = function(repository, terms, path, pageNumber, itemsPerPage) {
