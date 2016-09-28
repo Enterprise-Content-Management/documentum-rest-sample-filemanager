@@ -22,7 +22,9 @@
                         return this.apiMiddleware.listRootCabinets(this.pageNumber, this.pageSize);
                     }
                     else {
-                        return this.apiMiddleware.listFolderChildren(object, this.pageNumber, this.pageSize);
+                        // TODO for MMTM R2: improve folder list rest api call START 
+                        // call apiMiddleware to get folder children for folder
+                        // TODO for MMTM R2: improve folder list rest api call START 
                     }
                 };
 

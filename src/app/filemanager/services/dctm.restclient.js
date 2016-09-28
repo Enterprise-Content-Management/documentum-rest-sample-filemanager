@@ -62,12 +62,13 @@
                 return get(this, requestUrl, 'error_getting_root_cabinets');
             }
 
+            // TODO for MMTM R2: improve folder list rest api call START 
             dctmRestClient.prototype.listFolderChildren = function(folder, pageNumber, itemsPerPage) {
                 var requestUrl = this.findUrlGivenLinkRelation(folder, 'http://identifiers.emc.com/linkrel/objects');
-                var viewAttrs = 'r_object_id,r_object_type,object_name,r_modify_date,r_creation_date,i_folder_id,r_full_content_size,a_content_type';
-                requestUrl = buildUriWithQuery(requestUrl, ['page', pageNumber, 'items-per-page', itemsPerPage, 'inline', true, 'view', viewAttrs]);
+                //add query parameters for page size and attribute list
                 return get(this, requestUrl, 'error_getting_folder_children');
             }
+            // TODO for MMTM R2: fimprove folder list rest api call END 
 
             // TODO for MMTM R3: fix create folder rest api call START 
             dctmRestClient.prototype.createFolder = function(folder, name) {
