@@ -142,7 +142,9 @@
             var item = $scope.singleSelection();
             $scope.apiMiddleware.restClient.inprocess = true;
             $scope.apiMiddleware.getContentMeta(item, true).then(function(data) {
-                var acsUrl = $scope.apiMiddleware.restClient.findUrlGivenLinkRelation(data, 'enclosure');
+                // TODO for MMTM R4: Find ACS content link relation from content resource START 
+                var acsUrl = $scope.apiMiddleware.restClient.findUrlGivenLinkRelation(data, 'mmtm-r4-find-acs-link-relation');
+                // TODO for MMTM R4: Find ACS content link relation from content resource END 
                 $scope.modal('imagepreview', null, true)
                     .find('#imagepreview-target')
                     .attr('src', acsUrl)

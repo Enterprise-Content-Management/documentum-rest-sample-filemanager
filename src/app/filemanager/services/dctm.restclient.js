@@ -78,7 +78,7 @@
             dctmRestClient.prototype.ftSearch = function(repository, terms, path, pageNumber, itemsPerPage) {
                 return 'mmtm-r5-search-rest-api-call';
             };
-            // TODO for MMTM R5: implement search rest api call START 
+            // TODO for MMTM R5: implement search rest api call END 
 
             dctmRestClient.prototype.upload = function(parent, fileObj) {
                 var requestUrl = this.findUrlGivenLinkRelation(parent, 'http://identifiers.emc.com/linkrel/documents');
@@ -95,11 +95,14 @@
                 return deferred;
             };
 
+            // TODO for MMTM R4: implement get content metadata rest api call START 
             dctmRestClient.prototype.getContentMeta = function(docment, distributed) {
-                var requestUrl = this.findUrlGivenLinkRelation(docment, 'http://identifiers.emc.com/linkrel/primary-content');
-                requestUrl = buildUriWithQuery(requestUrl, ['media-url-policy', (distributed ? 'DC-PREF':'LOCAL')]);
-                return get(this, requestUrl, 'error_downloading_content');
+                // find content resource uri from document's link relaitons
+                // append query parameters if necessary
+                // get resoure
+                return 'mmtm-r4-content-meta-rest-api-call';
             };
+            // TODO for MMTM R4:  implement get content metadata rest api call END 
 
             dctmRestClient.prototype.rename = function(object, newName) {
                 var requestUrl = this.findUrlGivenLinkRelation(object, 'edit');
