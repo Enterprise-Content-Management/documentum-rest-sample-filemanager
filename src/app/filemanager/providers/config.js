@@ -9,7 +9,7 @@
 
             rootContext: '',
             repositories: [],
-            repositoryId: null,
+            repositoryName: null,
             repository: null,
             username: null,
             password: null,
