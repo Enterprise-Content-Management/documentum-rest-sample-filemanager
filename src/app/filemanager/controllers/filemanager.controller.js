@@ -2,8 +2,8 @@
   'use strict'
   angular.module('dctmNgFileManager')
     .controller('FileManagerController', [
-      '$scope', '$rootScope', '$window', '$translate', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware', 'CONSTANTS',
-      function ($scope, $rootScope, $window, $translate, fileManagerConfig, Item, FileNavigator, ApiMiddleware, CONSTANTS) {
+      '$scope', '$rootScope', '$window', '$translate', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware', 'dctmConstants',
+      function ($scope, $rootScope, $window, $translate, fileManagerConfig, Item, FileNavigator, ApiMiddleware, dctmConstants) {
         var $storage = $window.localStorage
         $scope.config = fileManagerConfig
         $scope.reverse = false
@@ -148,7 +148,7 @@
           var item = $scope.singleSelection()
           $scope.apiMiddleware.inprocess = true
           $scope.apiMiddleware.getContentMeta(item, true).then(function (resp) {
-            var acsUrl = $scope.apiMiddleware.findLinkFromObject(resp.data, CONSTANTS.LINK_RELATIONS.ENCLOSURE)
+            var acsUrl = $scope.apiMiddleware.getLinkFromResource(resp.data, dctmConstants.LINK_RELATIONS.ENCLOSURE)
             $scope.modal('imagepreview', null, true)
               .find('#imagepreview-target')
               .attr('src', acsUrl)

@@ -67,17 +67,32 @@ Your web browser will be promoted to access the URL `http://localhost:3000`. If 
 <img src="demo/filemanager.gif">
 
 ## 4. Feature Overview
+The sample application has a light API middleware [src/app/filemanager/services/filemanager.middleware.js](src/app/filemanager/services/filemanager.middleware.js) 
+which calls [Documentum REST JavaScript client](src/app/filemanager/providers.client.js) to consume the REST services. 
 
 ### 4.1 Sign in and sign out
 This sample application implements a very simple sign-in and sign-out process based on HTTP basic authentication. 
 
-> Sample code at [src/app/filemanager/services/dctm.auth.js](src/app/filemanager/services/dctm.auth.js) 
+> Sample code in API middleware [src/app/filemanager/services/filemanager.middleware.js](src/app/filemanager/services/filemanager.middleware.js) 
 
 ```js
-service.try_login = function (username, password) {
-    var authdata = Base64.encode(username + ':' + password);
-    $http.defaults.headers.common['Authorization'] = 'Basic ' + authdata;            
-};
+ApiMiddleware.prototype.login = function () {
+    var loginInfo = {
+    baseUri: fileManagerConfig.rootContext,
+    repoName: fileManagerConfig.repositoryName,
+    username: fileManagerConfig.username,
+    password: fileManagerConfig.password
+    }
+    return dctmClient.login(loginInfo).then(function () {
+    fileManagerConfig.signedin = true
+    })
+}
+
+ApiMiddleware.prototype.logout = function () {
+    return dctmClient.logout().then(function () {
+    fileManagerConfig.signedin = false
+    })
+}
 ```
 
 ### 4.2 Content functions
@@ -95,16 +110,29 @@ This smaple application impelments below content operations:
 * Full-text search
 * Pagination
 
-> Sample code at [src/app/filemanager/services/dctm.restclient.js](src/app/filemanager/services/dctm.restclient.js) 
+> Sample code in API middleware [src/app/filemanager/services/filemanager.middleware.js](src/app/filemanager/services/filemanager.middleware.js) 
 
 ```js
-dctmRestClient.prototype.getHomeDocument = function(homedocUrl) {
-    return get(this, homedocUrl, 'error_getting_home_document');
+ApiMiddleware.prototype.listRootCabinets = function (pageNumber, itemsPerPage) {
+    var repository = dctmClient.getCachedRepository()
+    return dctmClient.getCabinets(repository,
+    dctmConstants.QUERY_PARAMS.INLINE, true,
+    dctmConstants.QUERY_PARAMS.PAGE, pageNumber,
+    dctmConstants.QUERY_PARAMS.ITEMS_PER_PAGE, itemsPerPage)
 }
 
-dctmRestClient.prototype.listRepositories = function(homeDocument) {
-    var repositoriesUrl = homeDocument.resources['http://identifiers.emc.com/linkrel/repositories'].href;
-    return get(this, repositoriesUrl, 'error_getting_repository_list');
+ApiMiddleware.prototype.listFolderChildren = function (parent, pageNumber, itemsPerPage) {
+    var viewAttrs = 'r_object_id,r_object_type,object_name,r_modify_date,r_creation_date,i_folder_id,r_full_content_size,a_content_type'
+    return dctmClient.getChildObjects(parent,
+    dctmConstants.QUERY_PARAMS.INLINE, true,
+    dctmConstants.QUERY_PARAMS.VIEW, viewAttrs,
+    dctmConstants.QUERY_PARAMS.PAGE, pageNumber,
+    dctmConstants.QUERY_PARAMS.ITEMS_PER_PAGE, itemsPerPage)
+}
+
+ApiMiddleware.prototype.createFolder = function (parent) {
+    var newFolder = { properties: { object_name: parent.name }}
+    return dctmClient.createFolder(parent.object, newFolder)
 }
 ```
 
@@ -116,9 +144,9 @@ For an invalid operation, the error detail will be reported on the UI directly.
 
 ```xml
 <script type="text/ng-template" id="error-bar">
-  <div class="label label-danger error-msg pull-left animated fadeIn" ng-show="apiMiddleware.restClient.error">
+  <div class="label label-danger error-msg pull-left animated fadeIn" ng-show="apiMiddleware.error">
     <i class="glyphicon glyphicon-remove-circle"></i>
-    <span>{{apiMiddleware.restClient.error}}</span>
+    <span>{{apiMiddleware.error}}</span>
   </div>
 </script>
 ```

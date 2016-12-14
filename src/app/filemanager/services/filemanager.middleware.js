@@ -1,16 +1,16 @@
 ;(function (angular) {
   'use strict'
   angular.module('dctmNgFileManager')
-    .service('apiMiddleware', ['$http', '$q', '$window', 'fileManagerConfig', 'dctmClient', 'CONSTANTS',
-      function ($http, $q, $window, fileManagerConfig, dctmClient, CONSTANTS) {
+    .service('apiMiddleware', ['$http', '$q', '$window', 'fileManagerConfig', 'dctmClient', 'dctmConstants',
+      function ($http, $q, $window, fileManagerConfig, dctmClient, dctmConstants) {
         var ApiMiddleware = function () {
           this.inprocess = false
           this.error = ''
           this.asyncSuccess = false
         }
 
-        ApiMiddleware.prototype.findLinkFromObject = function (data, rel) {
-          return dctmClient.findLinkFromObject(data, rel)
+        ApiMiddleware.prototype.getLinkFromResource = function (data, rel) {
+          return dctmClient.getLinkFromResource(data, rel)
         }
 
         ApiMiddleware.prototype.parseEntries = function (data) {
@@ -54,7 +54,7 @@
           if (content == null) {
             return 'unknown'
           }
-          var objectsHref = dctmClient.findLinkFromObject(content, 'http://identifiers.emc.com/linkrel/objects')
+          var objectsHref = dctmClient.getLinkFromResource(content, dctmConstants.LINK_RELATIONS.OBJECTS)
           if (objectsHref == null) {
             return 'file'
           }else {
@@ -66,7 +66,7 @@
           if (content == null) {
             return 0
           }
-          var contentHref = dctmClient.findLinkFromObject(content, 'http://identifiers.emc.com/linkrel/primary-content')
+          var contentHref = dctmClient.getLinkFromResource(content, dctmConstants.LINK_RELATIONS.PRIMARY_CONTENT)
           if (contentHref == null) {
             return 0
           }else {
@@ -127,18 +127,18 @@
         ApiMiddleware.prototype.listRootCabinets = function (pageNumber, itemsPerPage) {
           var repository = dctmClient.getCachedRepository()
           return dctmClient.getCabinets(repository,
-            CONSTANTS.QUERY_PARAMS.INLINE, true,
-            CONSTANTS.QUERY_PARAMS.PAGE, pageNumber,
-            CONSTANTS.QUERY_PARAMS.ITEMS_PER_PAGE, itemsPerPage)
+            dctmConstants.QUERY_PARAMS.INLINE, true,
+            dctmConstants.QUERY_PARAMS.PAGE, pageNumber,
+            dctmConstants.QUERY_PARAMS.ITEMS_PER_PAGE, itemsPerPage)
         }
 
         ApiMiddleware.prototype.listFolderChildren = function (parent, pageNumber, itemsPerPage) {
           var viewAttrs = 'r_object_id,r_object_type,object_name,r_modify_date,r_creation_date,i_folder_id,r_full_content_size,a_content_type'
           return dctmClient.getChildObjects(parent,
-            CONSTANTS.QUERY_PARAMS.INLINE, true,
-            CONSTANTS.QUERY_PARAMS.VIEW, viewAttrs,
-            CONSTANTS.QUERY_PARAMS.PAGE, pageNumber,
-            CONSTANTS.QUERY_PARAMS.ITEMS_PER_PAGE, itemsPerPage)
+            dctmConstants.QUERY_PARAMS.INLINE, true,
+            dctmConstants.QUERY_PARAMS.VIEW, viewAttrs,
+            dctmConstants.QUERY_PARAMS.PAGE, pageNumber,
+            dctmConstants.QUERY_PARAMS.ITEMS_PER_PAGE, itemsPerPage)
         }
 
         ApiMiddleware.prototype.createFolder = function (parent) {
@@ -150,15 +150,15 @@
           var repository = dctmClient.getCachedRepository()
           if (path && path != '/') {
             return dctmClient.simpleSearch(repository, terms,
-              CONSTANTS.QUERY_PARAMS.LOCATIONS, path,
-              CONSTANTS.QUERY_PARAMS.INLINE, true,
-              CONSTANTS.QUERY_PARAMS.PAGE, pageNumber,
-              CONSTANTS.QUERY_PARAMS.ITEMS_PER_PAGE, pageSize)
+              dctmConstants.QUERY_PARAMS.LOCATIONS, path,
+              dctmConstants.QUERY_PARAMS.INLINE, true,
+              dctmConstants.QUERY_PARAMS.PAGE, pageNumber,
+              dctmConstants.QUERY_PARAMS.ITEMS_PER_PAGE, pageSize)
           }else {
             return dctmClient.simpleSearch(repository, terms,
-              CONSTANTS.QUERY_PARAMS.INLINE, true,
-              CONSTANTS.QUERY_PARAMS.PAGE, pageNumber,
-              CONSTANTS.QUERY_PARAMS.ITEMS_PER_PAGE, pageSize)
+              dctmConstants.QUERY_PARAMS.INLINE, true,
+              dctmConstants.QUERY_PARAMS.PAGE, pageNumber,
+              dctmConstants.QUERY_PARAMS.ITEMS_PER_PAGE, pageSize)
           }
         }
 
@@ -176,9 +176,9 @@
           var delayed = null
           for (var k = 0; k < objects.length; k++) {
             delayed = dctmClient.deleteItem(objects[k],
-              CONSTANTS.QUERY_PARAMS.DEL_NON_EMPTY, true,
-              CONSTANTS.QUERY_PARAMS.DEL_VERSION, 'all',
-              CONSTANTS.QUERY_PARAMS.DEL_ALL_LINKS, true)
+              dctmConstants.QUERY_PARAMS.DEL_NON_EMPTY, true,
+              dctmConstants.QUERY_PARAMS.DEL_VERSION, 'all',
+              dctmConstants.QUERY_PARAMS.DEL_ALL_LINKS, true)
           }
           return delayed
         }
@@ -212,17 +212,17 @@
 
         ApiMiddleware.prototype.getContentMeta = function (item, distributed) {
           return dctmClient.getPrimaryContentMeta(item.model.object,
-            CONSTANTS.QUERY_PARAMS.MEDIA_URL_POLICY, distributed ? 'dc-pref' : 'local')
+            dctmConstants.QUERY_PARAMS.MEDIA_URL_POLICY, distributed ? 'dc-pref' : 'local')
         }
 
         ApiMiddleware.prototype.edit = function (item) {
           var document = item.model.object
           var binary = item.tempModel.content
           return dctmClient.setContent(document, binary,
-            CONSTANTS.QUERY_PARAMS.PRIMARY, true,
-            CONSTANTS.QUERY_PARAMS.OVERWRITE, true,
-            CONSTANTS.QUERY_PARAMS.PAGE, 0,
-            CONSTANTS.QUERY_PARAMS.FORMAT, document.properties.a_content_type)
+            dctmConstants.QUERY_PARAMS.PRIMARY, true,
+            dctmConstants.QUERY_PARAMS.OVERWRITE, true,
+            dctmConstants.QUERY_PARAMS.PAGE, 0,
+            dctmConstants.QUERY_PARAMS.FORMAT, document.properties.a_content_type)
         }
 
         ApiMiddleware.prototype.download = function (item, forceNewWindow) {

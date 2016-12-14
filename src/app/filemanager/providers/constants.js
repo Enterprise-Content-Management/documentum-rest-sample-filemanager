@@ -1,6 +1,6 @@
 angular.module('dctmRestConstants', [])
   .constant(
-    'CONSTANTS', {
+    'dctmConstants', {
       LOGIN_INFO: {
         USERNAME: 'username',
         PASSWORD: 'password',
@@ -45,6 +45,7 @@ angular.module('dctmRestConstants', [])
         SEARCH: 'http://identifiers.emc.com/linkrel/search',
         SAVED_SEARCHES: 'http://identifiers.emc.com/linkrel/saved-searches',
         SEARCH_TEMPLATES: 'http://identifiers.emc.com/linkrel/search-templates',
+        ACLS: 'http://identifiers.emc.com/linkrel/acls',
         SELF: 'self',
         EDIT: 'edit',
         CONTENTS: 'contents',
@@ -74,3 +75,4 @@ angular.module('dctmRestConstants', [])
       },
       REPOSITORY_RESOURCE: 'repoResource'
     })
+
