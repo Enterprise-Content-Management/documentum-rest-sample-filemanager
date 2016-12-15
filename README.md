@@ -109,6 +109,7 @@ This smaple application impelments below content operations:
 * Delete
 * Full-text search
 * Pagination
+* Permission management 
 
 > Sample code in API middleware [src/app/filemanager/services/filemanager.middleware.js](src/app/filemanager/services/filemanager.middleware.js) 
 
