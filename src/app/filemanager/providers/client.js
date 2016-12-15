@@ -502,6 +502,11 @@
           link = appendURLParams(link, arguments)
           return this.get(link)
         },
+        'setPermissionSet': function setPermissionSetOfObject (obj, newPermissionSet) {
+          var link = findLinkInLinksArray(obj.links, dctmConstants.LINK_RELATIONS.PERMISSION_SET)
+          link = appendURLParams(link, arguments)
+          return this.put(link, newPermissionSet)
+        },
         'getUsers': function getUsers (repository) {
           var link = findLinkInLinksArray(repository.links, dctmConstants.LINK_RELATIONS.USERS)
           link = appendURLParams(link, arguments)

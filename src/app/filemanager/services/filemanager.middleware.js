@@ -238,6 +238,14 @@
           })
         }
 
+        ApiMiddleware.prototype.getPermissionSet = function (item) {
+          return dctmClient.getPermissionSet(item.model.object)
+        }
+
+        ApiMiddleware.prototype.setPermissionSet = function (item, permissionSet) {
+          return dctmClient.setPermissionSet(item.model.object, permissionSet)
+        }
+
         function buildPersistentObject (properties) {
           var prop = {}
           for (var k = 0; k < properties.length - 1; k = k + 2) {
@@ -285,15 +293,6 @@
         ApiMiddleware.prototype.extract = function (item, folderName, path) {
           var itemPath = this.getFilePath(item)
           return this.restClient.extract(fileManagerConfig.extractUrl, itemPath, folderName, this.getPath(path))
-        }
-
-        ApiMiddleware.prototype.changePermissions = function (files, dataItem) {
-          var items = this.getFileList(files)
-          var code = dataItem.tempModel.perms.toCode()
-          var octal = dataItem.tempModel.perms.toOctal()
-          var recursive = !!dataItem.tempModel.recursive
-
-          return this.restClient.changePermissions(fileManagerConfig.permissionsUrl, items, code, octal, recursive)  
         }
 
         return ApiMiddleware
