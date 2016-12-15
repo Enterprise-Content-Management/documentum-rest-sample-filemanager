@@ -64,7 +64,8 @@ angular.module('dctmRestConstants', [])
         MEDIA_URL_POLICY: 'media-url-policy',
         PRIMARY: 'primary',
         OVERWRITE: 'overwrite',
-        FORMAT: 'format'
+        FORMAT: 'format',
+        ACCESSOR: 'accessor'
       },
       MIME: {
         VND_DCTM_JSON: 'application/vnd.emc.documentum+json',
@@ -73,6 +74,7 @@ angular.module('dctmRestConstants', [])
         ANY_JSON: 'application/*+json',
         ANY: '*/*'
       },
+      BASIC_PERMISSIONS: ['None', 'Browse', 'Read', 'Relate', 'Version', 'Write', 'Delete'],
+      EXTEND_PERMISSIONS: ['CHANGE_FOLDER_LINKS', 'CHANGE_LOCATION', 'CHANGE_OWNER', 'CHANGE_PERMIT', 'CHANGE_STATE', 'DELETE_OBJECT', 'EXECUTE_PROC'],
       REPOSITORY_RESOURCE: 'repoResource'
     })
-

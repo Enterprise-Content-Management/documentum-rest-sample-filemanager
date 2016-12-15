@@ -2,8 +2,8 @@
   'use strict'
   angular.module('dctmNgFileManager')
     .controller('FileManagerController', [
-      '$scope', '$rootScope', '$window', '$translate', 'fileManagerConfig', 'item', 'fileNavigator', 'apiMiddleware', 'dctmConstants',
-      function ($scope, $rootScope, $window, $translate, fileManagerConfig, Item, FileNavigator, ApiMiddleware, dctmConstants) {
+      '$scope', '$rootScope', '$window', '$translate', 'fileManagerConfig', 'item', 'permit', 'fileNavigator', 'apiMiddleware', 'dctmConstants',
+      function ($scope, $rootScope, $window, $translate, fileManagerConfig, Item, Permit, FileNavigator, ApiMiddleware, dctmConstants) {
         var $storage = $window.localStorage
         $scope.config = fileManagerConfig
         $scope.reverse = false
@@ -20,6 +20,7 @@
         $scope.viewTemplate = $storage.getItem('viewTemplate') || 'main-table.html'
         $scope.fileList = []
         $scope.temps = []
+        $scope.dctmConstants = dctmConstants
 
         $scope.getRepositoryList = function () {
           $scope.apiMiddleware.listRepositories()
@@ -232,15 +233,31 @@
           })
         }
 
-        /************** line separator for implemented APIs ************/
-
-        $scope.changePermissions = function () {
-          $scope.apiMiddleware.changePermissions($scope.temps, $scope.temp).then(function () {
-            $scope.modal('changepermissions', true)
+        $scope.getPermissions = function () {
+          console.log('Get permissions for ' + $scope.temp.model.name)
+          $scope.apiMiddleware.getPermissionSet($scope.temp).then(function (resp) {
+            $scope.temp.tempModel.permit = new Permit(resp.data)
           }, function (resp) {
             $scope.apiMiddleware.parseError(resp.data)
           })
         }
+
+        $scope.changePermissions = function () {
+          console.log('Change permissions for ' + $scope.temp.model.name)
+          var grantedToUpdate = $scope.temp.tempModel.permit.toPermissionSet()
+          $scope.apiMiddleware.setPermissionSet($scope.temp, grantedToUpdate).then(function (resp) {
+            $scope.temp.tempModel.permit = new Permit(resp.data)
+          }, function (resp) {
+            $scope.apiMiddleware.parseError(resp.data)
+          })
+        }
+
+        $scope.addTempPermission = function () {
+          console.log('Add a new permission to ' + $scope.temp.model.name)
+          $scope.temp.tempModel.permit.increase()
+        }
+
+        /************** line separator for implemented APIs ************/
 
         $scope.compress = function () {
           var name = $scope.temp.tempModel.name.trim()
