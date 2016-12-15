@@ -12,6 +12,7 @@
                 type: model && model.type || 'file',
                 size: model && parseInt(model.size || 0),
                 date: model && model.date || '', 
+                owner: model && model.owner || '',
                 perms: new Chmod(model && model.rights),
                 content: model && model.content || '',
                 recursive: false,

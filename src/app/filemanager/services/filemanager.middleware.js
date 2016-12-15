@@ -25,6 +25,7 @@
                 'date': entries[k].published,
                 'type': this.getObjectType(entries[k].content),
                 'id': entries[k].id,
+                'owner': entries[k].author[0].name,
                 'object': entries[k].content.src == null ? entries[k].content : {}
               }
             }
@@ -292,7 +293,7 @@
           var octal = dataItem.tempModel.perms.toOctal()
           var recursive = !!dataItem.tempModel.recursive
 
-          return this.restClient.changePermissions(fileManagerConfig.permissionsUrl, items, code, octal, recursive)
+          return this.restClient.changePermissions(fileManagerConfig.permissionsUrl, items, code, octal, recursive)  
         }
 
         return ApiMiddleware
