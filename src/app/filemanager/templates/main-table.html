@@ -57,7 +57,7 @@
                     <i class="glyphicon glyphicon-folder-close" ></i>
                     {{item.model.name | strLimit : 64}}
                 </a>
-                <a target="_blank" ng-show="item.model.type === 'file' && !item.isPdf()" href="" title="{{item.model.name}} ({{item.model.size | humanReadableFileSize}})">
+                <a target="_blank" ng-show="item.model.type === 'file'" href="" title="{{item.model.name}} ({{item.model.size | humanReadableFileSize}})">
                     <i class="glyphicon glyphicon-file" ></i>
                     {{item.model.name | strLimit : 64}}
                 </a>
