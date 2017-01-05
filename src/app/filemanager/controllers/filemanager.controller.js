@@ -2,8 +2,8 @@
   'use strict'
   angular.module('dctmNgFileManager')
     .controller('FileManagerController', [
-      '$scope', '$rootScope', '$window', '$translate', 'fileManagerConfig', 'item', 'permit', 'fileNavigator', 'apiMiddleware', 'dctmConstants',
-      function ($scope, $rootScope, $window, $translate, fileManagerConfig, Item, Permit, FileNavigator, ApiMiddleware, dctmConstants) {
+      '$scope', '$rootScope', '$window', '$translate', 'fileManagerConfig', 'item', 'permit', 'fileNavigator', 'apiMiddleware', 'dctmClient', 'dctmConstants',
+      function ($scope, $rootScope, $window, $translate, fileManagerConfig, Item, Permit, FileNavigator, ApiMiddleware, dctmClient, dctmConstants) {
         var $storage = $window.localStorage
         $scope.config = fileManagerConfig
         $scope.reverse = false

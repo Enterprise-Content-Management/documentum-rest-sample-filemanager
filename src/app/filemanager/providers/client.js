@@ -1,12 +1,154 @@
 -function (angular) {
-  var module = angular.module('dctmRestClient', ['dctmRestConstants'])
+  var module = angular.module('dctmRestClient', [])
+
+  module.constant('dctmConstants', {
+    LOGIN_INFO: {
+      AUTH_HEADER: 'authHeader',
+      BASE_URI: 'baseUri',
+      REPOSITORY: 'repository'
+    },
+    HEADERS: {
+      ACCEPT: 'Accept',
+      CONTENT_TYPE: 'Content-Type',
+      AUTHORIZATION: 'Authorization'
+    },
+    LINK_RELATIONS: {
+      REPOSITORIES: 'http://identifiers.emc.com/linkrel/repositories',
+      CABINETS: 'http://identifiers.emc.com/linkrel/cabinets',
+      DOCUMENTS: 'http://identifiers.emc.com/linkrel/documents',
+      FOLDERS: 'http://identifiers.emc.com/linkrel/folders',
+      OBJECTS: 'http://identifiers.emc.com/linkrel/objects',
+      PARENT_LINKS: 'http://identifiers.emc.com/linkrel/parent-links',
+      CHECKOUT: 'http://identifiers.emc.com/linkrel/checkout',
+      CANCEL_CHECKOUT: 'http://identifiers.emc.com/linkrel/cancel-checkout',
+      CHECKIN_NEXT_MAJOR: 'http://identifiers.emc.com/linkrel/checkin-next-major',
+      CHECKED_OUT_OBJECTS: 'http://identifiers.emc.com/linkrel/checked-out-objects',
+      OBJECT_ASPECTS: 'http://identifiers.emc.com/linkrel/object-aspects',
+      DELETE: 'http://identifiers.emc.com/linkrel/delete',
+      PRIMARY_CONTENT: 'http://identifiers.emc.com/linkrel/primary-content',
+      CONTENT_MEDIA: 'http://identifiers.emc.com/linkrel/content-media',
+      PERMISSIONS: 'http://identifiers.emc.com/linkrel/permissions',
+      PERMISSION_SET: 'http://identifiers.emc.com/linkrel/permission-set',
+      USERS: 'http://identifiers.emc.com/linkrel/users',
+      GROUPS: 'http://identifiers.emc.com/linkrel/groups',
+      CURRENT_USER: 'http://identifiers.emc.com/linkrel/current-user',
+      DEFAULT_FOLDER: 'http://identifiers.emc.com/linkrel/default-folder',
+      CURRENT_USER_PREFERENCES: 'http://identifiers.emc.com/linkrel/current-user-preferences',
+      TYPES: 'http://identifiers.emc.com/linkrel/types',
+      ASPECT_TYPES: 'http://identifiers.emc.com/linkrel/aspect-types',
+      RELATION_TYPES: 'http://identifiers.emc.com/linkrel/relation-types',
+      FORMATS: 'http://identifiers.emc.com/linkrel/formats',
+      RELATIONS: 'http://identifiers.emc.com/linkrel/relations',
+      NETWORK_LOCATIONS: 'http://identifiers.emc.com/linkrel/network-locations',
+      ASSOCIATIONS: 'http://identifiers.emc.com/linkrel/associations',
+      BATCH_CAPABILITIES: 'http://identifiers.emc.com/linkrel/batch-capabilities',
+      SEARCH: 'http://identifiers.emc.com/linkrel/search',
+      SAVED_SEARCHES: 'http://identifiers.emc.com/linkrel/saved-searches',
+      SEARCH_TEMPLATES: 'http://identifiers.emc.com/linkrel/search-templates',
+      ACLS: 'http://identifiers.emc.com/linkrel/acls',
+      SELF: 'self',
+      EDIT: 'edit',
+      CONTENTS: 'contents',
+      ENCLOSURE: 'enclosure'
+    },
+    QUERY_PARAMS: {
+      PAGE: 'page',
+      ITEMS_PER_PAGE: 'items-per-page',
+      INLINE: 'inline',
+      VIEW: 'view',
+      Q: 'q',
+      LOCATIONS: 'locations',
+      DEL_NON_EMPTY: 'delete-non-empty',
+      DEL_VERSION: 'delete-version',
+      DEL_ALL_LINKS: 'delete-all-links',
+      MEDIA_URL_POLICY: 'media-url-policy',
+      PRIMARY: 'primary',
+      OVERWRITE: 'overwrite',
+      FORMAT: 'format',
+      ACCESSOR: 'accessor'
+    },
+    MIME: {
+      VND_DCTM_JSON: 'application/vnd.emc.documentum+json',
+      HOME_JSON: 'application/home+json',
+      APP_JSON: 'application/json',
+      ANY_JSON: 'application/*+json',
+      ANY: '*/*'
+    },
+    BASIC_PERMISSIONS: ['None', 'Browse', 'Read', 'Relate', 'Version', 'Write', 'Delete'],
+    EXTEND_PERMISSIONS: ['CHANGE_FOLDER_LINKS', 'CHANGE_LOCATION', 'CHANGE_OWNER', 'CHANGE_PERMIT', 'CHANGE_STATE', 'DELETE_OBJECT', 'EXECUTE_PROC'],
+    REPOSITORY_RESOURCE: 'repoResource'
+  })
+
+  module.provider('clientLocalStore', function (dctmConstants) {
+    this.$get = function () {
+      return new ClientLocalStore()
+    }
+
+    function ClientLocalStore () {
+      var baseUri = localStorage.getItem(dctmConstants.LOGIN_INFO.BASE_URI)
+      var repo = localStorage.getItem(dctmConstants.LOGIN_INFO.REPOSITORY)
+      var authHeader = localStorage.getItem(dctmConstants.LOGIN_INFO.AUTH_HEADER)
+      var repoResource = localStorage.getItem(dctmConstants.REPOSITORY_RESOURCE)
+      if (baseUri && repo && authHeader) {
+        this.authenticated = true
+        this.loginInfo = {
+          baseUri: baseUri,
+          repoName: repo,
+          authHeader: authHeader
+        }
+      }else {
+        this.authenticated = false
+        this.loginInfo = null
+      }
+    }
+
+    ClientLocalStore.prototype = {
+      'saveLogin': function saveLogin (loginInfo, repo) {
+        this.loginInfo = loginInfo
+        localStorage.setItem(dctmConstants.LOGIN_INFO.BASE_URI, loginInfo.baseUri)
+        localStorage.setItem(dctmConstants.LOGIN_INFO.REPOSITORY, loginInfo.repoName)
+        localStorage.setItem(dctmConstants.LOGIN_INFO.AUTH_HEADER, loginInfo.credentialHeader)
+        localStorage.setItem(dctmConstants.REPOSITORY_RESOURCE, JSON.stringify(repo))
+        this.authenticated = true
+      },
+      'clearLogin': function clearLogin () {
+        localStorage.removeItem(dctmConstants.LOGIN_INFO.BASE_URI)
+        localStorage.removeItem(dctmConstants.LOGIN_INFO.REPOSITORY)
+        localStorage.removeItem(dctmConstants.LOGIN_INFO.AUTH_HEADER)
+        localStorage.removeItem(dctmConstants.REPOSITORY_RESOURCE)
+        this.authenticated = false
+        this.loginInfo = null
+      },
+      'getCachedRepository': function getCachedRepository () {
+        var str = localStorage.getItem(dctmConstants.REPOSITORY_RESOURCE)
+        if (str) {
+          return JSON.parse(str)
+        }else {
+          return null
+        }
+      },
+      'getBaseUri': function getBaseUri () {
+        return localStorage.getItem(dctmConstants.LOGIN_INFO.BASE_URI)
+      },
+      'getCredentialHeader': function getCredentialHeader () {
+        return localStorage.getItem(dctmConstants.LOGIN_INFO.AUTH_HEADER)
+      }
+    }
+  })
 
   module.provider('clientBase', function (dctmConstants) {
-    this.$get = ['$http', '$q', 'authKeeper', function ($http, $q, authKeeper) {
+    this.$get = ['$http', '$q', 'clientLocalStore', function ($http, $q, clientLocalStore) {
       function DCTMRestClientBase ($http, $q) {
         this.http = function (obj) {
-          var decoratedArgs = authKeeper.authenticationHttpDecorate.apply(authKeeper, arguments)
-          return $http.apply(null, decoratedArgs)
+          if (clientLocalStore.authenticated && arguments[0]) {
+            var requestObj = arguments[0]
+            if (!requestObj.headers) {
+              requestObj.headers = {}
+            }
+            var headers = requestObj.headers
+            headers[dctmConstants.HEADERS.AUTHORIZATION] = clientLocalStore.getCredentialHeader()
+          }
+          return $http.apply(null, arguments)
         }
         this.q = $q
       }
@@ -29,13 +171,6 @@
           var params = {headers: headers,responseType: 'arraybuffer'}
           return this.http({method: 'GET',url: link,headers: headers,responseType: 'arraybuffer'})
         },
-        'getLinkFromResource': function getLinkFromResourceLinks (resource, rel) {
-          return findLinkInLinksArray(resource.links, rel)
-        },
-        'getLinkFromResource': function getLinkFromResourceLinks (resource, rel) {
-          return findLinkInLinksArray(resource.links, rel)
-        },
-        'getSelfLinkOfEntry': findSelfLinkFromEntry,
         'post': function post (link, data, headers) {
           if (!headers) {
             headers = {}
@@ -69,7 +204,7 @@
             headers = {}
           }
           if (!headers[dctmConstants.HEADERS.CONTENT_TYPE]) {
-            headers[dctmConstants.HEADERS.CONTENT_TYPE] = 'application/octet-stream'
+            headers[dctmConstants.HEADERS.CONTENT_TYPE] = dctmConstants.MIME.HOME_JSON
           }
           var params = {headers: headers,url: link}
           link = appendURLParams(link, arguments)
@@ -94,15 +229,18 @@
           link = appendURLParams(link, arguments)
           return this.http({method: 'DELETE',url: link,headers: headers})
         },
-        'getServices': function getServices (baseUri) {
+        'getLinkFromResource': function getLinkFromResourceLinks (resource, rel) {
+          return findLinkInLinksArray(resource.links, rel)
+        },
+        'getSelfLinkOfEntry': findSelfLinkFromEntry,
+        'getHomeDocument': function getHomeDocument (baseUri) {
           var headers = {}
-          headers[dctmConstants.HEADERS.CONTENT_TYPE] = 'application/home+json'
-          var link = servicesResourceLink(baseUri)
+          headers[dctmConstants.HEADERS.ACCEPT] = dctmConstants.MIME.ANY_JSON
+          var link = homeDocUri(baseUri)
           return this.http({method: 'GET',url: link,headers: headers})
         },
         'getRepositories': function getRepositories (services) {
           var headers = {}
-          headers[dctmConstants.HEADERS.CONTENT_TYPE] = dctmConstants.MIME.VND_DCTM_JSON
           if (!services) {
             throw new Error('"Services" entry must be provided')
           }
@@ -116,41 +254,31 @@
           return this.http({method: 'GET',url: link,headers: headers})
         },
         'getRepository': function getRepository (repos, repoName, headers) {
-          var link = findRepoLinkFromRepos(repos.entries, repoName)
+          var link = findRepoLinkFromRepos(repos, repoName)
           return this.get(link, headers)
         },
         'getCachedRepository': function getCachedRepository () {
-          return authKeeper.getCachedRepository()
+          return clientLocalStore.getCachedRepository()
         }
       }
 
       return new DCTMRestClientBase($http, $q)
     }]
 
-
-
-    function findRepoLinkFromRepos (repoEntries, repoName) {
-      if (!(repoEntries instanceof Array)) {
-        throw new Error('Illegal repository list')
+    function findRepoLinkFromRepos (repositories, repoName) {
+      var entry = findEntryFromFeedByTitle(repositories, repoName)
+      if (!entry) {
+        throw new Error('The repository is not found:' + repoName)
       }
-      if (!repoName) {
-        throw new Error('The name of repository must be provided')
-      }
-
-      for (var i = 0; i < repoEntries.length; i++) {
-        var entry = repoEntries[i]
-        if (repoName == entry.title) {
-          return findLinkInLinksArray(entry.links, dctmConstants.LINK_RELATIONS.EDIT)
-        }
-      }
+      return findLinkInLinksArray(entry.links, dctmConstants.LINK_RELATIONS.EDIT)
     }
 
-    function servicesResourceLink (baseUri) {
+    function homeDocUri (baseUri) {
       var link
       if (baseUri) {
         link = baseUri
       }else {
-        link = localStorage.getItem(dctmConstants.LOGIN_INFO.BASE_URI)
+        link = clientLocalStore.getBaseUri()
       }
       if (link.endsWith('/')) {
         return link + 'services'
@@ -160,10 +288,9 @@
     }
   })
 
-  module.provider('authentication', function (dctmConstants) {
-    this.$get = ['clientBase', 'authKeeper', function (clientBase, authKeeper) {
+  module.provider('dctmAuth', function (dctmConstants) {
+    this.$get = ['clientBase', 'clientLocalStore', function (clientBase, clientLocalStore) {
       function DCTMAuthenticationClient () {
-        this.successful = false
       }
 
       DCTMAuthenticationClient.prototype = {
@@ -171,12 +298,14 @@
           var defer = clientBase.q.defer()
           var promise = defer.promise
           var client = clientBase
-          client.getServices(loginInfo.baseUri).then(function (resp) {
+          client.getHomeDocument(loginInfo.baseUri).then(function (resp) {
             client.getRepositories(resp.data).then(function (resp) {
               var headers = {}
-              headers[dctmConstants.HEADERS.AUTHORIZATION] = authKeeper.credential(loginInfo.username, loginInfo.password)
+              var credentialHeader = basicAuth(loginInfo)
+              headers[dctmConstants.HEADERS.AUTHORIZATION] = credentialHeader
               client.getRepository(resp.data, loginInfo.repoName, headers).then(function (resp) {
-                authKeeper.login(loginInfo, resp.data)
+                loginInfo.credentialHeader = credentialHeader
+                clientLocalStore.saveLogin(loginInfo, resp.data)
                 defer.resolve(resp)
               }, function (error) {
                 defer.reject(error)
@@ -187,15 +316,15 @@
           })
           return promise
         },
-        'hasLogin': function () {
-          return authKeeper.hasLogin()
+        'authenticated': function () {
+          return clientLocalStore.authenticated
         },
         'logout': function () {
           var defer = clientBase.q.defer()
           var promise = defer.promise
           try {
             setTimeout(function () {
-              authKeeper.logout()
+              clientLocalStore.clearLogin()
               defer.resolve('success')
             }, 1)
           } catch(error) {
@@ -208,99 +337,27 @@
       }
       return new DCTMAuthenticationClient()
     }]
-  })
 
-  module.provider('authKeeper', function (dctmConstants) {
-    this.$get = function () {
-      return new Keeper()
-    }
-
-    function Keeper () {
-      var baseUri = localStorage.getItem(dctmConstants.LOGIN_INFO.BASE_URI)
-      var repo = localStorage.getItem(dctmConstants.LOGIN_INFO.REPOSITORY)
-      var username = localStorage.getItem(dctmConstants.LOGIN_INFO.USERNAME)
-      var password = localStorage.getItem(dctmConstants.LOGIN_INFO.PASSWORD)
-      var repoResource = localStorage.getItem(dctmConstants.REPOSITORY_RESOURCE)
-      if (baseUri && repo && username && password) {
-        this.successful = true
-        this.loginInfo = {
-          baseUri: baseUri,
-          repoName: repo,
-          username: username,
-          password: password
-        }
-      }else {
-        this.successful = false
-        this.loginInfo = null
-      }
-    }
-
-    Keeper.prototype = {
-      'authenticationHttpDecorate': function () {
-        if (!this.hasLogin()) {
-          return arguments
-        }
-        var requestObj = arguments[0]
-        if (!requestObj) {
-          return arguments
-        }
-        if (!requestObj.headers) {
-          requestObj.headers = {}
-        }
-        var headers = requestObj.headers
-        headers[dctmConstants.HEADERS.AUTHORIZATION] = this.credential(this.loginInfo.username, this.loginInfo.password)
-        return arguments
-      },
-      'hasLogin': function () {
-        return this.successful
-      },
-      'login': function (loginInfo, repo) {
-        this.loginInfo = loginInfo
-        localStorage.setItem(dctmConstants.LOGIN_INFO.BASE_URI, loginInfo.baseUri)
-        localStorage.setItem(dctmConstants.LOGIN_INFO.REPOSITORY, loginInfo.repoName)
-        localStorage.setItem(dctmConstants.LOGIN_INFO.USERNAME, loginInfo.username)
-        localStorage.setItem(dctmConstants.LOGIN_INFO.PASSWORD, loginInfo.password)
-        localStorage.setItem(dctmConstants.REPOSITORY_RESOURCE, JSON.stringify(repo))
-        this.successful = true
-      },
-      'logout': function () {
-        localStorage.removeItem(dctmConstants.LOGIN_INFO.BASE_URI)
-        localStorage.removeItem(dctmConstants.LOGIN_INFO.REPOSITORY)
-        localStorage.removeItem(dctmConstants.LOGIN_INFO.USERNAME)
-        localStorage.removeItem(dctmConstants.LOGIN_INFO.PASSWORD)
-        localStorage.removeItem(dctmConstants.REPOSITORY_RESOURCE)
-        this.successful = false
-        this.loginInfo = null
-      },
-      'getCachedRepository': function getCachedRepository () {
-        var str = localStorage.getItem(dctmConstants.REPOSITORY_RESOURCE)
-        if (str) {
-          return JSON.parse(str)
-        }else {
-          return null
-        }
-      },
-      'credential': function (username, password) {
-        return 'Basic ' + btoa(username + ':' + password)
-      }
+    function basicAuth (loginInfo) {
+      return 'Basic ' + btoa(loginInfo.username + ':' + loginInfo.password)
     }
   })
 
   module.provider('dctmClient', function (dctmConstants) {
-    this.$get = ['clientBase', 'authentication', function (clientBase, authentication) {
+    this.$get = ['clientBase', 'dctmAuth', function (clientBase, dctmAuth) {
       function DCTMRestClient (clientBase) {
         this.clientBase = clientBase
       }
 
       DCTMRestClient.prototype = {
         'login': function (loginInfo) {
-          return authentication.login(loginInfo)
+          return dctmAuth.login(loginInfo)
         },
-        'hasLogin': function () {
-          return authentication.hasLogin()
+        'authenticated': function () {
+          return dctmAuth.authenticated()
         },
         'logout': function () {
-          return authentication.logout()
+          return dctmAuth.logout()
         },
         'get': function get (link, headers) {
           return this.clientBase.get.apply(this.clientBase, arguments)
@@ -329,8 +386,8 @@
         'delete': function dlt (link, headers) {
           return this.clientBase['delete'].apply(this.clientBase, arguments)
         },
-        'getServices': function getServices (baseUri) {
-          return this.clientBase.getServices.apply(this.clientBase, arguments)
+        'getHomeDocument': function getHomeDocument (baseUri) {
+          return this.clientBase.getHomeDocument.apply(this.clientBase, arguments)
         },
         'getRepositories': function getRepositories (services) {
           return this.clientBase.getRepositories.apply(this.clientBase, arguments)
@@ -667,6 +724,7 @@
       return new DCTMRestClient(clientBase)
     }]
   })
+
   function findEntryFromFeedByTitle (feed, title) {
     var entries = feed.entries
     if (!entries) {
@@ -701,6 +759,7 @@
     }
     return true
   }
+
   function appendURLParams (link, args) {
     var from = args.callee ? args.callee.length : 0
     if (args.length < from) {

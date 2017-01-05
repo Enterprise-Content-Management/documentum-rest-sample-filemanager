@@ -99,7 +99,7 @@
         }
 
         ApiMiddleware.prototype.listRepositories = function () {
-          dctmClient.getServices(fileManagerConfig.rootContext).then(function (homedoc) {
+          dctmClient.getHomeDocument(fileManagerConfig.rootContext).then(function (homedoc) {
             dctmClient.getRepositories(homedoc.data)
               .then(function (repos) {
                 fileManagerConfig.repositories = repos.data.entries

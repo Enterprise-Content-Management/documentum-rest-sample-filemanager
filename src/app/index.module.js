@@ -3,6 +3,6 @@
 
   angular
     .module('dctmFileManagerSample', 
-      ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 'ngAria', 'ngResource', 'ui.router', 'dctmNgFileManager', 'ngFileSaver', 'dctmRestClient', 'dctmRestConstants']);
+      ['ngAnimate', 'ngCookies', 'ngTouch', 'ngSanitize', 'ngMessages', 'ngAria', 'ngResource', 'ui.router', 'dctmNgFileManager', 'ngFileSaver', 'dctmRestClient']);
 
 })();
