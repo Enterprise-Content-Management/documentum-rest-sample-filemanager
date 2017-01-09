@@ -166,4 +166,4 @@
 
         return FileNavigator
       }])
-})(angular)
+})(angular);

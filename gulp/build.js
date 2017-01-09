@@ -19,7 +19,7 @@ gulp.task('partials', function () {
       quotes: true
     }))
     .pipe($.angularTemplatecache('templateCacheHtml.js', {
-      module: 'documentumFileManagerApp',
+      module: 'dctmFileManagerSample',
       root: 'app'
     }))
     .pipe(gulp.dest(conf.paths.tmp + '/partials/'));
@@ -43,6 +43,7 @@ gulp.task('html', ['inject', 'partials'], function () {
     .pipe(assets = $.useref.assets())
     .pipe($.rev())
     .pipe(jsFilter)
+    .pipe($.replace('../assets/', 'assets/'))
     .pipe($.sourcemaps.init())
     .pipe($.ngAnnotate())
     .pipe($.uglify({ preserveComments: $.uglifySaveLicense })).on('error', conf.errorHandler('Uglify'))

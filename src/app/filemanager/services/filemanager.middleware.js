@@ -297,4 +297,4 @@
 
         return ApiMiddleware
       }])
-})(angular)
+})(angular);

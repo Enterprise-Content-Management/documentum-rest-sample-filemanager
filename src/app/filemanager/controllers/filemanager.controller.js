@@ -455,4 +455,4 @@
           $scope.modal('signin')
         }
       }])
-})(angular, jQuery)
+})(angular, jQuery);

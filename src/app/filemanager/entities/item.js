@@ -63,4 +63,4 @@
 
     return Item
   }])
-})(angular)
+})(angular);

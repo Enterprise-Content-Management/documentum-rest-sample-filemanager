@@ -814,4 +814,4 @@
     }
     return uri
   }
-}(angular)
+}(angular);

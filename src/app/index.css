@@ -1,4 +1,4 @@
-@import url('../../bower_components/bootswatch/paper/bootstrap.min.css');
+@import url(//maxcdn.bootstrapcdn.com/bootswatch/3.3.7/paper/bootstrap.min.css);
 @import url(//fonts.googleapis.com/css?family=Roboto+Slab:400,700|Roboto:400,700,700italic,400italic);
 
 @font-face {

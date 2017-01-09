@@ -48,4 +48,4 @@
 
     return Permit
   })
-})(angular)
+})(angular);

@@ -746,4 +746,4 @@
       new_folder: '新文件夹'
     })
   }])
-})(angular)
+})(angular);

@@ -58,4 +58,4 @@
         }
       }
     })
-})(angular)
+})(angular);
