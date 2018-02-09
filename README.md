@@ -24,7 +24,7 @@ Different with [Angular File Manager](https://github.com/joni2back/angular-filem
 * Enable [CORS](https://www.w3.org/TR/cors/) support in Documentum REST Services by customizing `dctm-rest.war\WEB-INF\classes\rest-api-runtime.properties`, update `dfc.properties` in the same directory and deploy the WAR.
 ```
 #
-# Copyright (c) 2016. EMC Corporation. All Rights Reserved.
+# Copyright (c) 2016. Open Text Corporation. All Rights Reserved.
 #
 
 # Sets user defined runtime properties below. Settings in this file override the default ones defined in specific
